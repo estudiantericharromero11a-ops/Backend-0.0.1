@@ -34,15 +34,15 @@ def main():
         if opcion == "1":
             contraseña = input("Ingrese la contraseña a hashear: ").strip()
             if not contraseña:
-                print("❌ Error: La contraseña no puede estar vacía")
+                print("Error: La contraseña no puede estar vacía")
                 continue
             
             hash_resultado = generate_hash(contraseña)
-            print(f"\n✅ Hash generado:")
+            print("\nHash generado:")
             print(f"   Contraseña: {contraseña}")
             print(f"   Hash: {hash_resultado}")
-            print(f"\nUse este hash en la BD:")
-            print(f"   INSERT INTO personas (nombre, documento, correo, username, password_hash, id_rol, estado)")
+            print("\nUse este hash en la BD:")
+            print("   INSERT INTO personas (nombre, documento, correo, username, password_hash, id_rol, estado)")
             print(f"   VALUES ('Nombre', 'Doc', 'email@univ.edu', 'username', '{hash_resultado}', 1, 1);")
             
         elif opcion == "2":
@@ -50,23 +50,23 @@ def main():
             hash_str = input("Ingrese el hash: ").strip()
             
             if verify_hash(contraseña, hash_str):
-                print(f"✅ La contraseña coincide con el hash")
+                print("La contraseña coincide con el hash")
             else:
-                print(f"❌ La contraseña NO coincide con el hash")
+                print("La contraseña NO coincide con el hash")
         
         elif opcion == "3":
-            print("\n👋 Hasta luego!")
+            print("Hasta luego!")
             break
         
         else:
-            print("❌ Opción no válida")
+            print("Opción no válida")
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n👋 Programa interrumpido")
+        print("\n\nPrograma interrumpido")
         sys.exit(0)
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\nError: {e}")
         sys.exit(1)

@@ -1,141 +1,155 @@
 # API FastAPI - Gestión de Instalaciones Universitarias
 
-## 📋 Descripción
-API REST desarrollada con FastAPI para la gestión de instalaciones universitarias. Conecta a PostgreSQL/pgAdmin con 13 tablas (11 principales + 2 puente).
+## Descripción
+API REST desarrollada con FastAPI para la gestión de instalaciones universitarias. La aplicación se conecta a PostgreSQL y ofrece CRUD para campus, bloques, instalaciones, personas, roles, programas, materias, horarios y asignaciones.
 
-## 🗄️ Estructura de Base de Datos
-**13 tablas totales:**
+## Instalación
 
-### Tablas Principales (11):
-1. `campus` - Campus universitarios
-2. `bloques` - Bloques dentro de campus
-3. `areas_funcionales` - Áreas funcionales
-4. `estado_instalacion` - Estados de instalación
-5. `instalaciones` - Instalaciones físicas
-6. `horario_instalacion` - Horarios de instalaciones
-7. `personas` - Personas del sistema
-8. `roles` - Roles de usuarios
-9. `programas` - Programas académicos
-10. `materias` - Materias académicas
-11. `asignacion_instalaciones` - Asignaciones de instalaciones
-
-### Tablas Puente/Relación (2):
-1. `persona_rol` - Relación muchos-a-muchos entre personas y roles
-2. `programa_materia` - Relación muchos-a-muchos entre programas y materias
-
-## 🚀 Cómo Iniciar la API
-
-### Opción 1: Usando Python directamente
+1. Crear y configurar la base de datos PostgreSQL.
+2. Editar `app/config/db_config.py` con los datos de conexión de tu servidor.
+3. Instalar dependencias:
 ```bash
-# Iniciar servidor
+pip install -r requirements.txt
+```
+4. Ejecutar el script de base de datos de inicialización:
+```bash
+psql -U <usuario> -d <nombre_bd> -f app/sql/scriptDatabase.sql
+```
+5. Iniciar la aplicación:
+```bash
 python main.py
 ```
 
-### Opción 2: Usando uvicorn directamente
-```bash
-# Iniciar con uvicorn
-uvicorn main:app --host 0.0.0.0 --port 8001 --reload
-```
+## Funcionamiento del Proyecto
 
-### Opción 3: Desde cualquier terminal (Windows)
-```bash
-# Desde el directorio del proyecto
-python main.py
-```
+1. El backend arranca en `http://localhost:8000` y monta todos los routers definidos en `app/routes/`.
+2. Cada router llama a un controlador en `app/controllers/` que ejecuta consultas SQL con `psycopg2`.
+3. Las entidades principales del sistema se comportan como CRUD:
+   - `campus`, `bloques`, `areas_funcionales`, `estado_instalacion`, `instalaciones`, `horario_instalacion`, `personas`, `roles`, `programas`, `materias`, `asignacion_instalaciones`, `persona_rol`, `programa_materia`, `conocimiento`.
+4. La autenticación JWT se maneja con `/auth/login`, `/auth/logout` y `/auth/verify`.
+5. Los datos se almacenan en PostgreSQL; los endpoints devuelven JSON compatibles con frontend y APIs externas.
 
-**Nota:** Si el puerto 8000 está ocupado, la API se iniciará automáticamente en el puerto 8001.
+## Conexión con el Frontend
 
-## 📡 Endpoints Disponibles
+1. El frontend puede consumir la API usando peticiones HTTP a `http://localhost:8000`.
+2. Para obtener un token JWT se usa `POST /auth/login` con `username` y `password`.
+3. El frontend puede enviar el token en el header `Authorization: Bearer <token>` para verificar sesión si lo necesita.
+4. Para leer datos desde el frontend se usan rutas como `/campus`, `/bloques`, `/instalaciones`, `/personas`, `/programas`, `/materias`, etc.
+5. Para crear o actualizar registros el frontend envía JSON válido a los endpoints correspondientes:
+   - `POST /{recurso}/`
+   - `PUT /{recurso}/{id}`
+   - `DELETE /{recurso}/{id}`
 
-### Base URL: `http://localhost:8000`
+## Conexión con el Proyecto de IA
 
-- `GET /docs` - Documentación interactiva de Swagger
-- `GET /campus/` - Lista todos los campus
-- `GET /bloques/` - Lista todos los bloques
-- `GET /areas_funcionales/` - Lista áreas funcionales
-- `GET /estado_instalacion/` - Lista estados de instalación
-- `GET /instalaciones/` - Lista todas las instalaciones
-- `GET /horarios-instalacion/` - Lista horarios de instalación
-- `GET /personas/` - Lista todas las personas
-- `GET /roles/` - Lista todos los roles
-- `GET /programas/` - Lista todos los programas
-- `GET /materias/` - Lista todas las materias
-- `GET /asignacion_instalacion/` - Lista asignaciones
+1. El endpoint de `conocimiento` permite almacenar y recuperar datos de conocimiento con campos `contenido` y `embedding`.
+2. Un proyecto de IA puede usar esta tabla para guardar información semántica o embeddings generados externamente.
+3. El flujo típico es:
+   - generar embeddings en el proyecto de IA,
+   - enviar los datos a `POST /conocimientos` para persistirlos,
+   - luego consultar `GET /conocimientos` o `GET /conocimientos/{id}` para recuperar contenido.
+4. La API no incluye el motor de IA en este repositorio, pero ofrece el almacenamiento y los endpoints necesarios para integrarlo.
 
-Cada endpoint soporta operaciones CRUD completas:
-- `GET /` - Listar todos
-- `GET /{id}` - Obtener específico
-- `POST /` - Crear nuevo
-- `PUT /{id}` - Actualizar
-- `DELETE /{id}` - Eliminar
+## Configuración de Base de Datos
 
-## 🔧 Configuración de Base de Datos
-
-La configuración se encuentra en `app/config/db_config.py`:
+La configuración de conexión está en `app/config/db_config.py`:
 
 ```python
 host="localhost"
 port="5432"
 user="postgres"
-password="jklm212rich17"  # Cambia según tu configuración
-dbname="university_db"
+password="<tu_password_segura>"
+dbname="<tu_nombre_de_base_de_datos>"
 ```
 
-## 📁 Estructura del Proyecto
+Cambia estos valores según tu entorno PostgreSQL y no compartas credenciales reales en repositorios públicos.
 
-```
-fast-api-0.0.1/
-├── main.py                 # Punto de entrada de la aplicación
-├── app/
-│   ├── config/
-│   │   └── db_config.py    # Configuración de base de datos
-│   ├── controllers/        # Lógica de negocio
-│   ├── models/            # Modelos Pydantic
-│   ├── routes/            # Definición de rutas/endpoints
-│   └── sql/               # Scripts SQL de referencia
-└── myvenv/                # Entorno virtual
-```
+## Estructura del Proyecto y Función de Archivos
 
-## ✅ Verificación de Funcionamiento
+- `main.py`
+  - Punto de entrada de la aplicación.
+  - Configura FastAPI, habilita CORS y monta los routers de cada módulo.
+  - Selecciona el puerto 8000 por defecto, o busca otro disponible si está ocupado.
 
-Para verificar que todo funciona correctamente:
+- `app/config/db_config.py`
+  - Define la conexión con PostgreSQL usando `psycopg2`.
+  - Ajusta `host`, `port`, `user`, `password` y `dbname` para tu proyecto.
 
-```bash
-# Activar entorno virtual
-myvenv\Scripts\activate
+- `app/config/jwt_config.py`
+  - Define la clave secreta JWT, el algoritmo y la duración del token.
+  - Usa `os.getenv` para permitir configuración desde variables de entorno.
 
-# Ejecutar prueba completa
-python -c "
-import requests
-response = requests.get('http://localhost:8001/campus/')
-print(f'Status: {response.status_code}')
-print(f'Datos: {len(response.json())} campus encontrados')
-"
-```
+- `app/routes/`
+  - Contiene la definición de rutas y prefijos para cada recurso.
+  - Cada archivo del directorio expone un router con endpoints CRUD.
 
-O accede directamente a:
-- **Documentación Swagger:** http://localhost:8001/docs
-- **Documentación ReDoc:** http://localhost:8001/redoc
+- `app/controllers/`
+  - Contiene la lógica de negocio y las consultas SQL contra PostgreSQL.
+  - Maneja operaciones create, read, update, delete y autenticación.
 
-## 🌐 Conexión con Frontend
+- `app/models/`
+  - Contiene los modelos Pydantic utilizados para validar entradas y salidas.
 
-La API incluye configuración CORS para permitir conexiones desde cualquier origen:
+- `app/sql/scriptDatabase.sql`
+  - Script principal para crear todas las tablas necesarias del sistema.
+  - Incluye tablas de inventario, relaciones y autenticación.
 
-```javascript
-// Ejemplo de conexión desde frontend
-fetch('http://localhost:8000/campus/')
-  .then(response => response.json())
-  .then(data => console.log(data));
-```
+- `scripts/generate_password_hash.py`
+  - Genera hashes bcrypt de contraseñas para almacenar en la base de datos.
+  - Verifica contraseñas contra hashes existentes.
 
-## 📊 Estado Actual
+- `scripts/verify_jwt_setup.py`
+  - Verifica que las dependencias y la configuración JWT estén presentes.
+  - Comprueba que las tablas necesarias existen en PostgreSQL.
 
-- ✅ **13 tablas** en PostgreSQL verificadas
-- ✅ **21 endpoints** funcionando correctamente
-- ✅ **Conexión activa** a base de datos
-- ✅ **CORS habilitado** para frontend
-- ✅ **Documentación automática** en `/docs`
-- ✅ **API probada y funcionando** en puerto 8001
-- ✅ **Proyecto optimizado** y limpio
+## Base de Datos y SQL de Integración
 
-¡La API está lista para producción! 🎉
+El script de inicialización recomendado es `app/sql/scriptDatabase.sql`. Contiene la definición completa de:
+
+- `roles_usuario`: permisos de autenticación.
+- `personas`: usuarios con `username`, `password_hash`, `id_rol` y estado.
+- `tokens_activos`: tokens JWT válidos e inactivos.
+- `conocimiento`: almacenamiento de contenido y embedding.
+- Tablas centrales: `campus`, `bloques`, `areas_funcionales`, `estado_instalacion`, `instalaciones`, `horario_instalacion`, `programas`, `materias`, `asignacion_instalaciones`, `persona_rol`, `programa_materia`.
+
+El esquema actualizado debe tener 16 tablas en total.
+
+## Endpoints principales
+
+Base URL: `http://localhost:8000`
+
+- `POST /auth/login` - Login y obtención de JWT.
+- `POST /auth/logout` - Cierre de sesión e invalidación de token.
+- `POST /auth/verify` - Verifica token enviado en cuerpo.
+- `GET /auth/verify-header` - Verifica token enviado en header `Authorization`.
+- `GET /campus/` - Lista campus.
+- `GET /bloques/` - Lista bloques.
+- `GET /areas_funcionales/` - Lista áreas funcionales.
+- `GET /estado_instalacion/` - Lista estados de instalación.
+- `GET /instalaciones/` - Lista instalaciones.
+- `GET /horarios_instalacion/` - Lista horarios de instalación.
+- `GET /personas/` - Lista personas.
+- `GET /roles/` - Lista roles.
+- `GET /programas/` - Lista programas.
+- `GET /materias/` - Lista materias.
+- `GET /asignacion_instalaciones/` - Lista asignaciones.
+- `GET /persona_rol/` - Lista relaciones persona-rol.
+- `GET /programa_materia/` - Lista relaciones programa-materia.
+- `GET /conocimientos/` - Lista conocimientos.
+
+Los routers implementan operaciones CRUD completas: listar, obtener por id, crear, actualizar y eliminar.
+
+## Requisitos de Python
+
+El archivo `requirements.txt` incluye las dependencias necesarias para ejecutar el backend actual.
+
+## Notas de integración
+
+- Ajusta siempre `app/config/db_config.py` a tu base de datos real.
+- Si necesitas cambiar la configuración JWT, usa variables de entorno para `JWT_SECRET_KEY`.
+- El script SQL recomendado para una instalación nueva es `app/sql/scriptDatabase.sql`.
+
+## Documentación automática
+
+- Swagger: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`

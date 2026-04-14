@@ -25,3 +25,7 @@ async def update(horario_id: int, horario: HorarioInstalacion):
 @router.delete("/{horario_id}")
 async def delete(horario_id: int):
     return controller.delete_horario_instalacion(horario_id)
+
+@router.patch("/{horario_id}/restore")
+async def restore(horario_id: int):
+    return controller.restore_horario_instalacion(horario_id)

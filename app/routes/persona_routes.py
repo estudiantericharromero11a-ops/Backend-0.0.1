@@ -25,3 +25,7 @@ async def update(persona_id: int, persona: Persona):
 @router.delete("/{persona_id}")
 async def delete(persona_id: int):
     return controller.delete_persona(persona_id)
+
+@router.patch("/{persona_id}/restore")
+async def restore(persona_id: int):
+    return controller.restore_persona(persona_id)

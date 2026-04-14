@@ -25,3 +25,7 @@ async def update(area_id: int, area: AreaFuncional):
 @router.delete("/{area_id}")
 async def delete(area_id: int):
     return controller.delete_area_funcional(area_id)
+
+@router.patch("/{area_id}/restore")
+async def restore(area_id: int):
+    return controller.restore_area_funcional(area_id)

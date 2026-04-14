@@ -42,6 +42,9 @@ class BloqueController:
                     "nombre": data[1],
                     "descripcion": data[2],
                     "id_campus": data[3],
+                    "estado": data[4],
+                    "created_at": data[5],
+                    "updated_at": data[6],
                 })
             return jsonable_encoder(bloques)
         except psycopg2.Error:
@@ -62,6 +65,9 @@ class BloqueController:
                     "nombre": result[1],
                     "descripcion": result[2],
                     "id_campus": result[3],
+                    "estado": result[4],
+                    "created_at": result[5],
+                    "updated_at": result[6],
                 }
                 return jsonable_encoder(bloque)
             else:

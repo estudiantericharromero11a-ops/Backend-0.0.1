@@ -25,3 +25,7 @@ async def update(estado_id: int, estado: EstadoInstalacion):
 @router.delete("/{estado_id}")
 async def delete(estado_id: int):
     return controller.delete_estado_instalacion(estado_id)
+
+@router.patch("/{estado_id}/restore")
+async def restore(estado_id: int):
+    return controller.restore_estado_instalacion(estado_id)

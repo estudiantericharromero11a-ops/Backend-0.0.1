@@ -43,6 +43,9 @@ class CampusController:
                     "nombre": data[1],
                     "direccion": data[2],
                     "descripcion": data[3],
+                    "estado": data[4],
+                    "created_at": data[5],
+                    "updated_at": data[6],
                 })
             return jsonable_encoder(campus_list)
         except psycopg2.Error:
@@ -64,6 +67,9 @@ class CampusController:
                     "nombre": result[1],
                     "direccion": result[2],
                     "descripcion": result[3],
+                    "estado": result[4],
+                    "created_at": result[5],
+                    "updated_at": result[6],
                 }
                 return jsonable_encoder(campus)
             else:

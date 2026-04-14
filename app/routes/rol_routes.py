@@ -25,3 +25,7 @@ async def update(rol_id: int, rol: Rol):
 @router.delete("/{rol_id}")
 async def delete(rol_id: int):
     return controller.delete_rol(rol_id)
+
+@router.patch("/{rol_id}/restore")
+async def restore(rol_id: int):
+    return controller.restore_rol(rol_id)

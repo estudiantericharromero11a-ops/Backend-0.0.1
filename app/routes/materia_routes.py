@@ -25,3 +25,7 @@ async def update(materia_id: int, materia: Materia):
 @router.delete("/{materia_id}")
 async def delete(materia_id: int):
     return controller.delete_materia(materia_id)
+
+@router.patch("/{materia_id}/restore")
+async def restore(materia_id: int):
+    return controller.restore_materia(materia_id)
